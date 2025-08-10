@@ -1,4 +1,14 @@
-# semver-checks
+# calver
+
+## Installation
+```bash
+go install github.com/snubwoody/calver@latest
+```
+
+## Usage
+```bash
+calver check -m package.json
+```
 
 ## Semantic commit messages
 - `feat`: New features
