@@ -1,4 +1,4 @@
-package calver_check
+package main
 
 import (
 	"errors"
