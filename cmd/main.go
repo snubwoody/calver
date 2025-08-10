@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/go-git/go-git/v6"
 	"github.com/go-git/go-git/v6/plumbing"
 )
@@ -18,7 +19,7 @@ func main() {
 	}
 
 	err = tags.ForEach(func(tag *plumbing.Reference) error {
-		fmt.Printf("Tag: %v", tag)
+		fmt.Printf("Tag: %v", tag.String())
 		return nil
 	})
 
