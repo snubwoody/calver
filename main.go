@@ -2,28 +2,51 @@ package main
 
 import (
 	"fmt"
-
 	"github.com/go-git/go-git/v6"
-	"github.com/go-git/go-git/v6/plumbing"
+	"github.com/spf13/cobra"
+	"os"
 )
 
-func main() {
-	repo, err := git.PlainOpen(".")
-	if err != nil {
-		panic(err)
-	}
+var rootCmd = &cobra.Command{
+	Use:   "calver",
+	Short: "CalVer tool",
+	Long:  "A tool for checking CalVer versions against git tags",
+}
 
-	tags, err := repo.Tags()
-	if err != nil {
-		panic(err)
-	}
-
-	err = tags.ForEach(func(tag *plumbing.Reference) error {
-		fmt.Printf("Tag: %v", tag.String())
+var checkCmd = &cobra.Command{
+	Use:   "check",
+	Short: "Check for CalVer violations",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		path, err := cmd.Flags().GetString("manifest")
+		// TODO: check if manifest is missing
+		if err != nil {
+			return err
+		}
+		pkg, err := ReadPackageJson(path)
+		if err != nil {
+			return err
+		}
+		repo, err := git.PlainOpen("")
+		exists, err := VersionExists(repo, fmt.Sprintf("v%s", pkg.Version))
+		if err != nil {
+			return err
+		}
+		if exists {
+			return fmt.Errorf("version: %s already exists", pkg.Version)
+		}
 		return nil
-	})
+	},
+}
 
-	if err != nil {
-		panic(err)
+func Execute() {
+	rootCmd.AddCommand(checkCmd)
+	checkCmd.Flags().StringP("manifest", "m", "", "Path to the manifest (e.g Cargo.toml)")
+	if err := rootCmd.Execute(); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
 	}
+}
+
+func main() {
+	Execute()
 }
