@@ -1,0 +1,9 @@
+
+# IDE settings
+.vscode/
+.idea/
+
+# Temp stuff
+test-output/
+temp/
+tmp/
