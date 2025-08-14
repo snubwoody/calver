@@ -17,8 +17,7 @@ var RootCmd = &cobra.Command{
 }
 
 func Execute() {
-	RootCmd.AddCommand(check.CheckCmd)
-	check.CheckCmd.Flags().StringP("manifest", "m", "", "Path to the manifest (e.g Cargo.toml)")
+	RootCmd.AddCommand(check.NewCheckCmd())
 	if err := RootCmd.Execute(); err != nil {
 		c := color.New(color.FgRed)
 		c.Fprint(os.Stderr, "Error: ")
